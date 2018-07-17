@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<!--узнать значение мета 2-й и 3-ей-->
+	<meta name="viewport"
+			content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0,">
+	<meta http-equiv="X-UA-Compotiable" content="ie=edge"> 
+	<!-- Подключим бутстрам-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>VueJS</title>
+</head>
+<body>
+	<div class="container pt-5" id="app">
+	<div class="row mb-3"> <!-- отступ между books and find-->
+		<div class="col">
+			<h1>Books application</h1>
+		</div>
+	</div>
+	<div class="row">
+		<!--Колонки в бутстрапе разделяются на 12 частей, 4 забираем на левое меню, 8 на детальное отображение-->
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="search">Find you book</label>
+				<input 
+					type="text" 
+					class="form-contol" 
+					id="search" 
+					placeholder="Name, author..."
+					v-model="search"
+					>
+					
+			</div>
+
+			<hr>
+
+			<ul class="list-group">
+				<li 
+					v-for="(book, index) in filteredBooks"
+					class="list-group-item list-group-item-action pointer"
+					v-on:click="selectCar(index)"
+					:class="{'active': selectedCarIndex === index}"
+					>
+					{{ book.name }} - {{book.author}}
+				</li>
+				<!--На каждой итерации создаем новый элемент индекс,
+					которая будет говорить о номере данной машины-->
+				<!--list-group-item-action - -->
+			</ul>
+		</div>
+		<div class="col-md-8"> <!--"pt-3" для вырвавнивания, спорно-->
+			<div class="row">
+				<div class="col-md-5">
+					<h2>{{ book.name }}</h2>
+					<img 
+						:src="book.image" 
+						v-bind:alt="book.name" 
+						class="rounded detailed-car-image"
+					> <!--привязка v-bind обязательна, vue.js не просто рендерит html, он анализирует html 
+					свои собственным компилятором, работает с вируальным домом, обычные конструкции для него непонятны,
+					сокращение v-bind = ":"-->
+				</div>
+				<div class="col-md-7 pt-2">
+					<h5>Books details:</h5>
+					<ul>
+						<li>Author - <strong>{{ book.author }}</strong></li>
+						<li>Year - <strong>{{ book.year }}</strong></li>
+						<li>Seria - <strong>{{ book.seria }}</strong></li>
+					</ul>
+					
+					<div class="phone-block">
+						<transition name="price">
+							<p v-if="priceVisibility">{{ book.price }}</p>
+						</transition>
+					</div>
+					<button 
+						class="btn btn-outline-success mr-3" 
+						@Click="priceVisibility = !priceVisibility"
+						v-text="priceBtnText"
+						></button>
+					<button class="btn btn-primary" @click="modalVisability = true">Buy</button>	
+				</div>	
+			</div>
+		</div>
+	</div>
+
+	<div class="row pt-3" v-if="logs.length !== 0">
+		<div class="col-md-12">
+			<ul class="list-group">
+				  <li 
+				  	v-for="log in logs"
+				  	class="list-group-item list-group-item-secondary"
+				  	:class="{
+				  		'list-group-item-secondary': log.type === 'cnl',
+				  		'list-group-item-success': log.type === 'ok'
+				  }"
+				  >
+					{{ log.text }} {{ log.date | date }}
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<transition name="modal">
+		<div class="modal fade show" v-if="modalVisability" tabindex="-1" role="dialog">
+  		<div class="modal-dialog" role="document">
+    		<div class="modal-content">
+      			<div class="modal-header">
+       			 	<h5 class="modal-title">Do you want to buy this book</h5>
+        			<button
+        				type="button" 
+        				class="close" 
+        				data-dismiss="modal" 
+        				aria-label="Close"
+        				@click="modalVisability = false"
+        			>
+          				<span aria-hidden="true">&times;</span>
+        			</button>
+      			</div>
+      			<div class="modal-body">
+        			<p><strong>Current book - {{ book.name }}</strong></p>
+
+        			<ul>
+						<li>Author - <strong>{{ book.author }}</strong></li>
+						<li>Year - <strong>{{ book.year }}</strong></li>
+						<li>Seria - <strong>{{ book.seria }}</strong></li>
+					</ul>
+      			</div>
+      			<div class="modal-footer">
+      				<button 
+        				type="button" 
+        				class="btn btn-primary"
+        				@click="newOrder" 
+        			>
+        				Buy
+        			</button>
+        			<button 
+        				type="button" 
+        				class="btn btn-secondary" 
+        				data-dismiss="modal"
+        				@click="cancelOrder"
+        			>
+        				Cancel
+        			</button>
+        			
+      			</div>
+    		</div>
+  		</div>
+		</div>
+	</transition>
+
+	<transition name="fade">
+	<div class="modal-backdrop fade show" v-if="modalVisability"></div>
+	</transition>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+	<script src="main.js"></script>
+</body>
+</html>
