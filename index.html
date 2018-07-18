@@ -21,7 +21,7 @@
 	<div class="row">
 		<!--Колонки в бутстрапе разделяются на 12 частей, 4 забираем на левое меню, 8 на детальное отображение-->
 		<div class="col-md-4">
-			<div class="form-group">
+			<div class="form-group"> <!--для поиска-->
 				<label for="search">Find you book</label>
 				<input 
 					type="text" 
@@ -34,13 +34,13 @@
 			</div>
 
 			<hr>
-
-			<ul class="list-group">
+			
+			<ul class="list-group"> <!-- -->
 				<li 
 					v-for="(book, index) in filteredBooks"
 					class="list-group-item list-group-item-action pointer"
-					v-on:click="selectCar(index)"
-					:class="{'active': selectedCarIndex === index}"
+					v-on:click="selectBook(index)"
+					:class="{'active': selectedBookIndex === index}"
 					>
 					{{ book.name }} - {{book.author}}
 				</li>
@@ -51,12 +51,12 @@
 		</div>
 		<div class="col-md-8"> <!--"pt-3" для вырвавнивания, спорно-->
 			<div class="row">
-				<div class="col-md-5">
+				<div class="col-md-5"> <!--колонка для картинки-->
 					<h2>{{ book.name }}</h2>
 					<img 
 						:src="book.image" 
 						v-bind:alt="book.name" 
-						class="rounded detailed-car-image"
+						class="rounded detailed-book-image"
 					> <!--привязка v-bind обязательна, vue.js не просто рендерит html, он анализирует html 
 					свои собственным компилятором, работает с вируальным домом, обычные конструкции для него непонятны,
 					сокращение v-bind = ":"-->
